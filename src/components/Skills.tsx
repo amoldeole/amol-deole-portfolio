@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { SkillsService } from '../services';
+import { SkillsService } from '../assets/data';
 
 const Skills: React.FC = () => {
   const skillCategories = SkillsService.getAllSkills();

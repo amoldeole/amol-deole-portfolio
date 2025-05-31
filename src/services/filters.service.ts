@@ -1,5 +1,5 @@
 import { Filter } from './../types/filter.types';
-import filtersData from './data/filters.json';
+import filtersData from '../assets/data/filters.json';
 
 export const FiltersService = {
   getAllFilters: (): Filter[] => filtersData.filters,

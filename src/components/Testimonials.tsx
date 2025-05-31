@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Quote, Star, Linkedin } from 'lucide-react';
-import { TestimonialsService } from '../services';
+import { TestimonialsService } from '../assets/data';
 
 const Testimonials: React.FC = () => {
   const testimonials = TestimonialsService.getAllTestimonials();

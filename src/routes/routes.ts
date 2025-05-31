@@ -1,37 +1,39 @@
 import { lazy } from 'react';
 
+const basePath = process.env.PUBLIC_URL || '';
+
 export const routes = [
   {
-    path: '/',
+    path: `${basePath}/`,
     component: lazy(() => import('../components/Hero')),
     exact: true
   },
   {
-    path: '/about',
+    path: `${basePath}/about`,
     component: lazy(() => import('../components/About'))
   },
   {
-    path: '/skills',
+    path: `${basePath}/skills`,
     component: lazy(() => import('../components/Skills'))
   },
   {
-    path: '/resume',
+    path: `${basePath}/resume`,
     component: lazy(() => import('../components/Resume'))
   },
   {
-    path: '/projects',
+    path: `${basePath}/projects`,
     component: lazy(() => import('../components/Projects'))
   },
   {
-    path: '/testimonials',
+    path: `${basePath}/testimonials`,
     component: lazy(() => import('../components/Testimonials'))
   },
   {
-    path: '/certificates',
+    path: `${basePath}/certificates`,
     component: lazy(() => import('../components/Certificates'))
   },
   {
-    path: '/contact',
+    path: `${basePath}/contact`,
     component: lazy(() => import('../components/Contact'))
   }
 ];

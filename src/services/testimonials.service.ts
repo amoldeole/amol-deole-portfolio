@@ -1,4 +1,4 @@
-import testimonialsData from './data/testimonials.json';
+import testimonialsData from '../assets/data/testimonials.json';
 
 export const TestimonialsService = {
   getAllTestimonials: () => testimonialsData.testimonials,

@@ -1,4 +1,4 @@
-import certificatesData from './data/certificates.json';
+import certificatesData from '../assets/data/certificates.json';
 
 export const CertificatesService = {
   getAllCertificates: () => certificatesData.certificates,

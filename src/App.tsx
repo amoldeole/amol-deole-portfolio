@@ -1,15 +1,22 @@
 import { ThemeProvider } from './contexts/ThemeContext';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LazyComponent } from './components/common/LazyComponent';
 import { routes } from './routes/routes';
 import Navbar from './components/Navbar';
 
 function App() {
+  const basePath = process.env.PUBLIC_URL || '';
+
   return (
     <ThemeProvider>
       <BrowserRouter>
-      <Navbar />
+        <Navbar />
         <Routes>
+          {/* Default redirect */}
+          <Route
+            path="/"
+            element={<Navigate to={`${basePath}/`} replace />}
+          />
           {routes.map(({ path, component: Component }) => (
             <Route
               key={path}
@@ -23,20 +30,20 @@ function App() {
           ))}
         </Routes>
       </BrowserRouter>
-        
-        {/* Footer */}
-        <footer className="bg-gray-900 dark:bg-black text-white py-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <p className="text-gray-400 mb-4">
-                © 2024 Amol Deole. All rights reserved.
-              </p>
-              <p className="text-gray-500 text-sm">
-                Designed by Amol Deole | Built with React, TypeScript, and Tailwind CSS
-              </p>
-      </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 dark:bg-black text-white py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-gray-400 mb-4">
+              © 2024 Amol Deole. All rights reserved.
+            </p>
+            <p className="text-gray-500 text-sm">
+              Designed by Amol Deole | Built with React, TypeScript, and Tailwind CSS
+            </p>
           </div>
-        </footer>
+        </div>
+      </footer>
     </ThemeProvider>
   );
 }

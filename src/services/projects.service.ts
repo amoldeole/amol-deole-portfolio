@@ -1,5 +1,5 @@
 import { Project } from './../types/project.types';
-import projectsData from './data/projects.json';
+import projectsData from '../assets/data/projects.json';
 
 export const ProjectsService = {
   getAllProjects: (): Project[] => projectsData.experience,

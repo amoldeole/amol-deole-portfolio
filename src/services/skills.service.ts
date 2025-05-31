@@ -1,4 +1,4 @@
-import skillsData from './data/skills.json';
+import skillsData from '../assets/data/skills.json';
 
 export const SkillsService = {
   getAllSkills: () => skillsData.skills,

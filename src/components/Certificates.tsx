@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Award, Filter } from 'lucide-react';
+import { Award } from 'lucide-react';
 import CertificateModal from './CertificateModal';
 import { CertificatesService } from '../services/certificates.service';
 import { FiltersService } from '../services/filters.service';

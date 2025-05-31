@@ -9,6 +9,7 @@ const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
+  const basePath = process.env.PUBLIC_URL || '';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,24 +19,24 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+
   const navItems = [
-    { name: 'Home', path: '/' },
-    { name: 'About', path: '/about' },
-    { name: 'Skills', path: '/skills' },
-    { name: 'Resume', path: '/resume' },
-    { name: 'Projects', path: '/projects' },
-    { name: 'Testimonials', path: '/testimonials' },
-    { name: 'Certificates', path: '/certificates' },
-    { name: 'Contact', path: '/contact' },
+    { name: 'Home', path: `${basePath}/` },
+    { name: 'About', path: `${basePath}/about` },
+    { name: 'Skills', path: `${basePath}/skills` },
+    { name: 'Resume', path: `${basePath}/resume` },
+    { name: 'Projects', path: `${basePath}/projects` },
+    { name: 'Testimonials', path: `${basePath}/testimonials` },
+    { name: 'Certificates', path: `${basePath}/certificates` },
+    { name: 'Contact', path: `${basePath}/contact` }
   ];
 
   return (
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-lg' : 'bg-transparent'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-lg' : 'bg-transparent'
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
@@ -54,9 +55,8 @@ const Navbar: React.FC = () => {
               <Link key={item.name} to={item.path}>
                 <motion.span
                   whileHover={{ scale: 1.05 }}
-                  className={`text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200 font-medium text-sm px-2 py-1 ${
-                    location.pathname === item.path ? 'text-primary-600 dark:text-primary-400' : ''
-                  }`}
+                  className={`text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200 font-medium text-sm px-2 py-1 ${location.pathname === item.path ? 'text-primary-600 dark:text-primary-400' : ''
+                    }`}
                 >
                   {item.name}
                 </motion.span>
@@ -104,9 +104,8 @@ const Navbar: React.FC = () => {
                 key={item.name}
                 to={item.path}
                 onClick={() => setIsOpen(false)}
-                className={`block px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 ${
-                  location.pathname === item.path ? 'text-primary-600 dark:text-primary-400 bg-gray-50 dark:bg-gray-800' : ''
-                }`}
+                className={`block px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 ${location.pathname === item.path ? 'text-primary-600 dark:text-primary-400 bg-gray-50 dark:bg-gray-800' : ''
+                  }`}
               >
                 {item.name}
               </Link>
