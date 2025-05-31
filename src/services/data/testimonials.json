@@ -1,0 +1,81 @@
+{
+  "testimonials": [
+    {
+      "name": "Bhushan Patil",
+      "role": "Sr Lead - Applications Development at TransUnion",
+      "testimonial": "I have worked with Amol for quite a sometime now as his colleague. Amol is smart, hardworking, technically savvy and has in-depth knowledge about Angular and Java technologies. His problem-solving attitude is very much appreciated by the teams. He also possesses good leadership qualities. I would consider his proficient in Angular, Java technology; which makes him a great asset to any company.",
+      "image": "https://media-exp1.licdn.com/dms/image/C4E03AQHtlh7fVkj29A/profile-displayphoto-shrink_100_100/0/1619402951040",
+      "rating": 5
+    },
+    {
+      "name": "Amol Bhujbal",
+      "role": "Software Engineer II at Avaya Software",
+      "testimonial": "I worked with Amol on multiple stories, projects. He is very talented, provided unique solutions on multiple occasions. Amol has very good grasp on Angular and showed interest as full stack developer by working on Java based backed also. I definitely recommend him and would love work with him again.",
+      "image": "https://media-exp1.licdn.com/dms/image/C4D03AQHbVj14SmRzEg/profile-displayphoto-shrink_100_100/0/1516993807055",
+      "rating": 5
+    },
+    {
+      "name": "Pranay Kohad",
+      "role": "Senior Software Engineer at Maveric Systems Limited",
+      "testimonial": "One of the best front end developer that I worked with.",
+      "image": "https://media-exp1.licdn.com/dms/image/C4D03AQGt9EyYMfyBIA/profile-displayphoto-shrink_100_100/0/1652343245674",
+      "rating": 5
+    },
+    {
+      "name": "Manoj Kumar",
+      "role": "Web Developer at AGILIAD",
+      "testimonial": "I know Amol Deole as a hard working and very serious team player. I learned a lot from working with Amol. Amol is a great UI developer. Amol has a good understanding of Javascript, Jquery, DOM, and Angular as well. and certainly can get my full recommendation.",
+      "image": "https://media-exp1.licdn.com/dms/image/C4E03AQF40r1es16Tow/profile-displayphoto-shrink_100_100/0/1517272675864",
+      "rating": 5
+    },
+    {
+      "name": "Raj Kumar",
+      "role": "Systems Engineering Lead @Persistent Systems",
+      "testimonial": "Angular Boy!!",
+      "image": "https://media-exp1.licdn.com/dms/image/C4E03AQE_UiqdNwCixw/profile-displayphoto-shrink_100_100/0/1623212711724",
+      "rating": 5
+    },
+    {
+      "name": "Harshal Yeole",
+      "role": "MS Information Technology @ ASU | AWS Certified | Former Module Lead & Full Stack Developer",
+      "testimonial": "Amol is an amazing professional who brings all of the skills and expertise in programming and UI design. It was indeed a great pleasure working with Amol for two years at Tudip Technologies Pvt. Ltd. We worked on several projects together. Amol is indeed an asset to any organization.",
+      "image": "https://media-exp1.licdn.com/dms/image/C4D03AQEuNsb6RG0HrQ/profile-displayphoto-shrink_100_100/0/1661579465017",
+      "rating": 5
+    },
+    {
+      "name": "Pushkar Abhishek",
+      "role": "Senior Enterprise Developer at Infostretch",
+      "testimonial": "Working with such a hard working person was very motivational..",
+      "image": "https://media-exp1.licdn.com/dms/image/C5603AQHBZk-9Nmef1w/profile-displayphoto-shrink_100_100/0/1516961577862",
+      "rating": 5
+    },
+    {
+      "name": "Dipak Deshmukh",
+      "role": "Software Engineer at JK Treel",
+      "testimonial": "I know Amol Deole personally and he is also my team member. He is a web developer having strong technical skills in Angular 2, 4 and 6. He has leadership skills as well.",
+      "image": "https://media-exp1.licdn.com/dms/image/C5103AQFFgExHwVqndw/profile-displayphoto-shrink_100_100/0/1580929770223",
+      "rating": 5
+    },
+    {
+      "name": "Shekhar Pandey",
+      "role": "Full Stack Web Developer | GO | MEAN | AWS | GCP | Docker | Kubernetes",
+      "testimonial": "I have the pleasure of working with Amol for two and a half year at the Tudip Technologies, collaborating on several projects. I know Amol as one of a hardworking and awesome team player. Amol expertly filled the role of leading the project and creating responsive websites as UI developer. He has been undoubtedly a great asset for any company. As a team member, Amol earns my highest recommendation for his ability to adopt new technologies and the ability to handle clients.",
+      "image": "https://media-exp1.licdn.com/dms/image/C4E03AQGyN7Smq73vTQ/profile-displayphoto-shrink_100_100/0/1596999659619",
+      "rating": 5
+    },
+    {
+      "name": "Saurabh Mahajan",
+      "role": "Tech Lead || React, JavaScript",
+      "testimonial": "Amol is one of the best developers I know. He is expert in angular JS and is a team player.",
+      "image": "https://media-exp1.licdn.com/dms/image/C4D03AQGZ-6qYNbqs5w/profile-displayphoto-shrink_100_100/0/1650024433433",
+      "rating": 5
+    },
+    {
+      "name": "Piyush Zalani",
+      "role": "Senior Software Engineer at Zensar Technologies",
+      "testimonial": "A good UI/UX developer with good problem-solving skills. I've benefited from his creative problem-solving, tireless work ethic, and willingness to do whatever it takes to create a product that will translate the customer's vision into reality",
+      "image": "https://media-exp1.licdn.com/dms/image/C5603AQH6zpHAKwqASg/profile-displayphoto-shrink_100_100/0/1517438023575",
+      "rating": 5
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "filters": [
+    {
+      "name": "All",
+      "value": "*"
+    },
+    {
+      "name": "Generative AI",
+      "value": "Gen-AI"
+    },
+    {
+      "name": "Angular",
+      "value": "angular"
+    },
+    {
+      "name": "Java",
+      "value": "java"
+    },
+    {
+      "name": "JavaScript",
+      "value": "javascript"
+    },
+    {
+      "name": "SQL",
+      "value": "SQL"
+    },
+    {
+      "name": "Problem Solving",
+      "value": "problem-solving"
+    },
+    {
+      "name": "CSS",
+      "value": "CSS"
+    },
+    {
+      "name": "Awards",
+      "value": "Award"
+    }
+  ]
+}

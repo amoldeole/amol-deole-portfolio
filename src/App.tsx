@@ -1,29 +1,28 @@
 import { ThemeProvider } from './contexts/ThemeContext';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { LazyComponent } from './components/common/LazyComponent';
+import { routes } from './routes/routes';
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import About from './components/About';
-import Skills from './components/Skills';
-import Resume from './components/Resume';
-import Testimonials from './components/Testimonials';
-import Certificates from './components/Certificates';
-import Projects from './components/Projects';
-import Contact from './components/Contact';
 
 function App() {
   return (
     <ThemeProvider>
-      <div className="App">
-        <Navbar />
-        <main>
-          <Hero />
-          <About />
-          <Skills />
-          <Resume />
-          <Projects />
-          <Testimonials />
-          <Certificates />
-          <Contact />
-        </main>
+      <BrowserRouter>
+      <Navbar />
+        <Routes>
+          {routes.map(({ path, component: Component }) => (
+            <Route
+              key={path}
+              path={path}
+              element={
+                <LazyComponent>
+                  <Component />
+                </LazyComponent>
+              }
+            />
+          ))}
+        </Routes>
+      </BrowserRouter>
         
         {/* Footer */}
         <footer className="bg-gray-900 dark:bg-black text-white py-8">
@@ -38,7 +37,6 @@ function App() {
       </div>
           </div>
         </footer>
-      </div>
     </ThemeProvider>
   );
 }

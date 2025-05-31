@@ -1,56 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { SkillsService } from '../services';
 
 const Skills: React.FC = () => {
-  const skillCategories = [
-    {
-      title: 'Frontend',
-      skills: [
-        { name: 'React', level: 90, icon: '⚛️' },
-        { name: 'Angular', level: 95, icon: '🅰️' },
-        { name: 'TypeScript', level: 90, icon: '📘' },
-        { name: 'JavaScript', level: 95, icon: '🟨' },
-        { name: 'HTML/CSS', level: 90, icon: '🎨' },
-        { name: 'Tailwind CSS', level: 85, icon: '💨' }
-      ]
-    },
-    {
-      title: 'Backend',
-      skills: [
-        { name: 'Java', level: 95, icon: '☕' },
-        { name: 'Spring Boot', level: 95, icon: '🍃' },
-        { name: 'Node.js', level: 80, icon: '🟢' },
-        { name: 'Python', level: 75, icon: '🐍' },
-        { name: 'REST APIs', level: 95, icon: '🔗' },
-        { name: 'Microservices', level: 90, icon: '🔧' }
-      ]
-    },
-    {
-      title: 'Database & Cloud',
-      skills: [
-        { name: 'MySQL', level: 90, icon: '🐬' },
-        { name: 'PostgreSQL', level: 85, icon: '🐘' },
-        { name: 'MongoDB', level: 80, icon: '🍃' },
-        { name: 'AWS', level: 85, icon: '☁️' },
-        { name: 'Docker', level: 85, icon: '🐳' },
-        { name: 'Kubernetes', level: 75, icon: '⚙️' }
-      ]
-    },
-    {
-      title: 'Tools & Others',
-      skills: [
-        { name: 'Git', level: 95, icon: '📝' },
-        { name: 'Jenkins', level: 80, icon: '🔨' },
-        { name: 'JIRA', level: 85, icon: '📋' },
-        { name: 'Maven', level: 90, icon: '📦' },
-        { name: 'Gradle', level: 85, icon: '🏗️' },
-        { name: 'Agile/Scrum', level: 90, icon: '🔄' }
-      ]
-    }
-  ];
+  const skillCategories = SkillsService.getAllSkills();
 
   return (
-    <section id="skills" className="py-8 bg-gray-50 dark:bg-gray-800">
+    <section id="skills" className="min-h-screen flex items-center justify-center bg-gradient-to-br py-8 bg-gray-50 dark:bg-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Award } from 'lucide-react';
+import { Award, Filter } from 'lucide-react';
 import CertificateModal from './CertificateModal';
+import { CertificatesService } from '../services/certificates.service';
+import { FiltersService } from '../services/filters.service';
 
 interface Certificate {
   title: string;
@@ -16,104 +18,9 @@ const Certificates: React.FC = () => {
   const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const certificates: Certificate[] = [
-    {
-      title: 'Generative AI',
-      subtitle: 'Power Of Gen AI',
-      image: '/amol-deole-portfolio/assets/certificates/Amol Ashok Deole_page-0001.jpg',
-      category: 'Gen-AI',
-      year: '2024'
-    },
-    {
-      title: 'Angular Intermediate',
-      subtitle: 'HackerRank',
-      image: '/amol-deole-portfolio/assets/hacker-rank/Angular-Intermediate-HackerRank.png',
-      category: 'angular',
-      year: '2023'
-    },
-    {
-      title: 'Angular Basics',
-      subtitle: 'HackerRank',
-      image: '/amol-deole-portfolio/assets/hacker-rank/Angular-Basics-HackerRank.png',
-      category: 'angular',
-      year: '2023'
-    },
-    {
-      title: 'Java Basics',
-      subtitle: 'HackerRank',
-      image: '/amol-deole-portfolio/assets/hacker-rank/Java-Basics-HackerRank.png',
-      category: 'java',
-      year: '2023'
-    },
-    {
-      title: 'JavaScript Intermediate',
-      subtitle: 'HackerRank',
-      image: '/amol-deole-portfolio/assets/hacker-rank/JavaScript-Intermediate-HackerRank.png',
-      category: 'javascript',
-      year: '2023'
-    },
-    {
-      title: 'JavaScript Basic',
-      subtitle: 'HackerRank',
-      image: '/amol-deole-portfolio/assets/hacker-rank/JavaScript-Basic-HackerRank.png',
-      category: 'javascript',
-      year: '2023'
-    },
-    {
-      title: 'SQL Intermediate',
-      subtitle: 'HackerRank',
-      image: '/amol-deole-portfolio/assets/hacker-rank/SQL-Intermediate-HackerRank.png',
-      category: 'SQL',
-      year: '2023'
-    },
-    {
-      title: 'SQL Basic',
-      subtitle: 'HackerRank',
-      image: '/amol-deole-portfolio/assets/hacker-rank/SQL-Basic-HackerRank.png',
-      category: 'SQL',
-      year: '2023'
-    },
-    {
-      title: 'Problem Solving Intermediate',
-      subtitle: 'HackerRank',
-      image: '/amol-deole-portfolio/assets/hacker-rank/ProblemSolving-Intermediate-HackerRank.png',
-      category: 'problem-solving',
-      year: '2023'
-    },
-    {
-      title: 'Problem Solving Basic',
-      subtitle: 'HackerRank',
-      image: '/amol-deole-portfolio/assets/hacker-rank/ProblemSolving-Basic-HackerRank.png',
-      category: 'problem-solving',
-      year: '2023'
-    },
-    {
-      title: 'CSS',
-      subtitle: 'HackerRank',
-      image: '/amol-deole-portfolio/assets/hacker-rank/CSS-HackerRank.png',
-      category: 'CSS',
-      year: '2023'
-    },
-    {
-      title: 'Quarterly Award',
-      subtitle: 'All Rounder',
-      image: '/amol-deole-portfolio/assets/certificates/Quarterly-Award Certificate.jpg',
-      category: 'Award',
-      year: '2023'
-    }
-  ];
+  const certificates: Certificate[] = CertificatesService.getAllCertificates();
 
-  const filters = [
-    { name: 'All', value: '*' },
-    { name: 'Generative AI', value: 'Gen-AI' },
-    { name: 'Angular', value: 'angular' },
-    { name: 'Java', value: 'java' },
-    { name: 'JavaScript', value: 'javascript' },
-    { name: 'SQL', value: 'SQL' },
-    { name: 'Problem Solving', value: 'problem-solving' },
-    { name: 'CSS', value: 'CSS' },
-    { name: 'Awards', value: 'Award' }
-  ];
+  const filters = FiltersService.getAllFilters();
 
   const filteredCertificates = activeFilter === '*' 
     ? certificates 
@@ -130,7 +37,7 @@ const Certificates: React.FC = () => {
   };
 
   return (
-    <section id="certificates" className="py-8 bg-gray-50 dark:bg-gray-800">
+    <section id="certificates" className="py-20 bg-gray-50 dark:bg-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -233,5 +140,4 @@ const Certificates: React.FC = () => {
     </section>
   );
 };
-
 export default Certificates;

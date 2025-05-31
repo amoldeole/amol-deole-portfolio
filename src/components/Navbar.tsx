@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
@@ -7,6 +8,7 @@ const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { isDark, toggleTheme } = useTheme();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,15 +19,14 @@ const Navbar: React.FC = () => {
   }, []);
 
   const navItems = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Resume', href: '#resume' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Testimonials', href: '#testimonials' },
-    { name: 'Certificates', href: '#certificates' },
-
-    { name: 'Contact', href: '#contact' },
+    { name: 'Home', path: '/' },
+    { name: 'About', path: '/about' },
+    { name: 'Skills', path: '/skills' },
+    { name: 'Resume', path: '/resume' },
+    { name: 'Projects', path: '/projects' },
+    { name: 'Testimonials', path: '/testimonials' },
+    { name: 'Certificates', path: '/certificates' },
+    { name: 'Contact', path: '/contact' },
   ];
 
   return (
@@ -33,31 +34,33 @@ const Navbar: React.FC = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-lg'
-          : 'bg-transparent'
+        scrolled ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-lg' : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="text-2xl font-bold gradient-text font-poppins"
-          >
-            Amol Deole
-          </motion.div>
+          <Link to="/amol-deole-portfolio">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="text-2xl font-bold gradient-text font-poppins"
+            >
+              Amol Deole
+            </motion.div>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-3">
             {navItems.map((item) => (
-              <motion.a
-                key={item.name}
-                href={item.href}
-                whileHover={{ scale: 1.05 }}
-                className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200 font-medium text-sm px-2 py-1"
-              >
-                {item.name}
-              </motion.a>
+              <Link key={item.name} to={item.path}>
+                <motion.span
+                  whileHover={{ scale: 1.05 }}
+                  className={`text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200 font-medium text-sm px-2 py-1 ${
+                    location.pathname === item.path ? 'text-primary-600 dark:text-primary-400' : ''
+                  }`}
+                >
+                  {item.name}
+                </motion.span>
+              </Link>
             ))}
             <motion.button
               whileHover={{ scale: 1.1 }}
@@ -97,14 +100,16 @@ const Navbar: React.FC = () => {
             className="lg:hidden bg-white dark:bg-gray-900 rounded-lg shadow-lg mt-2 py-4 max-h-96 overflow-y-auto"
           >
             {navItems.map((item) => (
-              <a
+              <Link
                 key={item.name}
-                href={item.href}
+                to={item.path}
                 onClick={() => setIsOpen(false)}
-                className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200"
+                className={`block px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 ${
+                  location.pathname === item.path ? 'text-primary-600 dark:text-primary-400 bg-gray-50 dark:bg-gray-800' : ''
+                }`}
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </motion.div>
         )}
