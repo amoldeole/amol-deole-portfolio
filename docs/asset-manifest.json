@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/static/css/main.a5d76601.css",
-    "main.js": "/static/js/main.9797c3b1.js",
-    "static/media/bg.jpg": "/static/media/bg.570f45b10540f1140278.jpg",
-    "index.html": "/index.html",
-    "main.a5d76601.css.map": "/static/css/main.a5d76601.css.map",
-    "main.9797c3b1.js.map": "/static/js/main.9797c3b1.js.map"
+    "main.css": "/amol-deole-portfolio/static/css/main.cc7976a3.css",
+    "main.js": "/amol-deole-portfolio/static/js/main.9797c3b1.js",
+    "static/media/bg.jpg": "/amol-deole-portfolio/static/media/bg.570f45b10540f1140278.jpg",
+    "index.html": "/amol-deole-portfolio/index.html",
+    "main.cc7976a3.css.map": "/amol-deole-portfolio/static/css/main.cc7976a3.css.map",
+    "main.9797c3b1.js.map": "/amol-deole-portfolio/static/js/main.9797c3b1.js.map"
   },
   "entrypoints": [
-    "static/css/main.a5d76601.css",
+    "static/css/main.cc7976a3.css",
     "static/js/main.9797c3b1.js"
   ]
 }
