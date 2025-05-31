@@ -58,7 +58,7 @@ const Hero: React.FC = () => {
             <div className="relative inline-block">
               <motion.img
                 whileHover={{ scale: 1.05 }}
-                src="/assets/img/me.jpg"
+                src="/amol-deole-portfolio/assets/img/me.jpg"
                 alt="Amol Deole"
                 className="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto mb-6 shadow-2xl border-4 border-white dark:border-gray-700"
               />
@@ -102,7 +102,7 @@ const Hero: React.FC = () => {
               Get In Touch
             </motion.a>
             <motion.a
-              href="/assets/files/Amol_Deole_8+Years.pdf"
+              href="/amol-deole-portfolio/assets/files/Amol_Deole_8+Years.pdf"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}

@@ -20,84 +20,84 @@ const Certificates: React.FC = () => {
     {
       title: 'Generative AI',
       subtitle: 'Power Of Gen AI',
-      image: '/assets/certificates/Amol Ashok Deole_page-0001.jpg',
+      image: '/amol-deole-portfolio/assets/certificates/Amol Ashok Deole_page-0001.jpg',
       category: 'Gen-AI',
       year: '2024'
     },
     {
       title: 'Angular Intermediate',
       subtitle: 'HackerRank',
-      image: '/assets/hacker-rank/Angular-Intermediate-HackerRank.png',
+      image: '/amol-deole-portfolio/assets/hacker-rank/Angular-Intermediate-HackerRank.png',
       category: 'angular',
       year: '2023'
     },
     {
       title: 'Angular Basics',
       subtitle: 'HackerRank',
-      image: '/assets/hacker-rank/Angular-Basics-HackerRank.png',
+      image: '/amol-deole-portfolio/assets/hacker-rank/Angular-Basics-HackerRank.png',
       category: 'angular',
       year: '2023'
     },
     {
       title: 'Java Basics',
       subtitle: 'HackerRank',
-      image: '/assets/hacker-rank/Java-Basics-HackerRank.png',
+      image: '/amol-deole-portfolio/assets/hacker-rank/Java-Basics-HackerRank.png',
       category: 'java',
       year: '2023'
     },
     {
       title: 'JavaScript Intermediate',
       subtitle: 'HackerRank',
-      image: '/assets/hacker-rank/JavaScript-Intermediate-HackerRank.png',
+      image: '/amol-deole-portfolio/assets/hacker-rank/JavaScript-Intermediate-HackerRank.png',
       category: 'javascript',
       year: '2023'
     },
     {
       title: 'JavaScript Basic',
       subtitle: 'HackerRank',
-      image: '/assets/hacker-rank/JavaScript-Basic-HackerRank.png',
+      image: '/amol-deole-portfolio/assets/hacker-rank/JavaScript-Basic-HackerRank.png',
       category: 'javascript',
       year: '2023'
     },
     {
       title: 'SQL Intermediate',
       subtitle: 'HackerRank',
-      image: '/assets/hacker-rank/SQL-Intermediate-HackerRank.png',
+      image: '/amol-deole-portfolio/assets/hacker-rank/SQL-Intermediate-HackerRank.png',
       category: 'SQL',
       year: '2023'
     },
     {
       title: 'SQL Basic',
       subtitle: 'HackerRank',
-      image: '/assets/hacker-rank/SQL-Basic-HackerRank.png',
+      image: '/amol-deole-portfolio/assets/hacker-rank/SQL-Basic-HackerRank.png',
       category: 'SQL',
       year: '2023'
     },
     {
       title: 'Problem Solving Intermediate',
       subtitle: 'HackerRank',
-      image: '/assets/hacker-rank/ProblemSolving-Intermediate-HackerRank.png',
+      image: '/amol-deole-portfolio/assets/hacker-rank/ProblemSolving-Intermediate-HackerRank.png',
       category: 'problem-solving',
       year: '2023'
     },
     {
       title: 'Problem Solving Basic',
       subtitle: 'HackerRank',
-      image: '/assets/hacker-rank/ProblemSolving-Basic-HackerRank.png',
+      image: '/amol-deole-portfolio/assets/hacker-rank/ProblemSolving-Basic-HackerRank.png',
       category: 'problem-solving',
       year: '2023'
     },
     {
       title: 'CSS',
       subtitle: 'HackerRank',
-      image: '/assets/hacker-rank/CSS-HackerRank.png',
+      image: '/amol-deole-portfolio/assets/hacker-rank/CSS-HackerRank.png',
       category: 'CSS',
       year: '2023'
     },
     {
       title: 'Quarterly Award',
       subtitle: 'All Rounder',
-      image: '/assets/certificates/Quarterly-Award Certificate.jpg',
+      image: '/amol-deole-portfolio/assets/certificates/Quarterly-Award Certificate.jpg',
       category: 'Award',
       year: '2023'
     }

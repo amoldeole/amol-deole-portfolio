@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/amol-deole-portfolio/static/css/main.cc7976a3.css",
-    "main.js": "/amol-deole-portfolio/static/js/main.9797c3b1.js",
+    "main.js": "/amol-deole-portfolio/static/js/main.1d7336c9.js",
     "static/media/bg.jpg": "/amol-deole-portfolio/static/media/bg.570f45b10540f1140278.jpg",
     "index.html": "/amol-deole-portfolio/index.html",
     "main.cc7976a3.css.map": "/amol-deole-portfolio/static/css/main.cc7976a3.css.map",
-    "main.9797c3b1.js.map": "/amol-deole-portfolio/static/js/main.9797c3b1.js.map"
+    "main.1d7336c9.js.map": "/amol-deole-portfolio/static/js/main.1d7336c9.js.map"
   },
   "entrypoints": [
     "static/css/main.cc7976a3.css",
-    "static/js/main.9797c3b1.js"
+    "static/js/main.1d7336c9.js"
   ]
 }

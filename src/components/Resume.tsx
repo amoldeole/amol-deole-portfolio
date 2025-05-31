@@ -83,7 +83,7 @@ const Resume: React.FC = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <motion.a
-              href="/assets/files/Amol_Deole_8+Years.pdf"
+              href="/amol-deole-portfolio/assets/files/Amol_Deole_8+Years.pdf"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
@@ -122,7 +122,7 @@ const Resume: React.FC = () => {
                 </div>
                 <div className="w-full h-[800px] border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                   <embed
-                    src="/assets/files/Amol_Deole_8+Years.pdf"
+                    src="/amol-deole-portfolio/assets/files/Amol_Deole_8+Years.pdf"
                     type="application/pdf"
                     width="100%"
                     height="100%"
