@@ -1,24 +1,28 @@
 export interface Project {
+  id: string;
   title: string;
-  company: string;
-  period: string;
-  location: string;
   description: string;
-  image: string;
+  shortDescription: string;
   technologies: string[];
-  highlights: string;
-  responsibilities: string[];
+  category: string;
+  status: string;
+  priority: string;
+  startDate: string;
+  endDate?: string;
+  demoUrl?: string;
+  githubUrl?: string;
+  images: string[];
+  features: string[];
+  challenges?: string;
+  learnings?: string;
+  teamSize?: number;
+  role?: string;
+  isPublic: boolean;
   featured: boolean;
+  viewCount: number;
+  likes: number;
+  tags: string[];
   year: string;
-  urls?: {
-    ios?: string;
-    admin?: string;
-    web?: string;
-  };
-  features?: {
-    core: string[];
-  };
-  architecture?: {
-    components: string[];
-  };
+  createdAt: string;
+  updatedAt: string;
 }

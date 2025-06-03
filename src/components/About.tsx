@@ -61,7 +61,7 @@ const About: React.FC = () => {
 
   return (
     <section id="about" className="py-20 bg-white dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -100,11 +100,12 @@ const About: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Software Engineer</h3>
-            <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-6 italic">
-              Software Engineer with having an experience in full stack development in Java, Spring Boot, Rest APIs,
-              Microservices, MySql, Oracle. Microfront-end using Angular 2+ versions, ReactJs, Javascript, JQuery, 
-              Material, Git, Jira, Node, Nginx, Apache.
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Amol Deole - Software Engineer</h3>
+            <p className="text-lm text-gray-700 dark:text-gray-300 leading-relaxed mb-6 italic">
+              Software Engineer with hands-on experience in full-stack development, 
+              specializing in Java, Spring Boot, RESTful APIs, and microservices. 
+              Proficient in relational databases like MySQL and Oracle. Skilled in building scalable frontends using micro-frontend architecture with Angular (2+), ReactJS, JavaScript, jQuery, and Material UI. 
+              Experienced with DevOps and deployment tools including Git, Jira, Node.js, Nginx, and Apache.
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">

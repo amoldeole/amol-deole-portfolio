@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Download, Mail, ArrowDown } from 'lucide-react';
+import { Download, Mail } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaTwitter, FaFacebook, FaInstagram, FaSkype } from 'react-icons/fa';
 
 interface SocialLink {
@@ -9,7 +9,7 @@ interface SocialLink {
   label: string;
 }
 
-const Hero: React.FC = () => {
+const Home: React.FC = () => {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -44,7 +44,7 @@ const Hero: React.FC = () => {
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 pt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -139,7 +139,6 @@ const Hero: React.FC = () => {
             transition={{ duration: 2, repeat: Infinity }}
             className="text-gray-400 dark:text-gray-500"
           >
-            <ArrowDown size={32} className="mx-auto" />
           </motion.div>
         </motion.div>
       </div>
@@ -147,4 +146,4 @@ const Hero: React.FC = () => {
   );
 };
 
-export default Hero;
+export default Home;

@@ -1,3 +1,5 @@
+import { getCategoryConfig, CategoryConfig } from '../config/skills.config';
+
 interface ApiSkill {
   _id: string;
   name: string;
@@ -46,8 +48,7 @@ interface SkillsData {
   skills: SkillCategory[];
 }
 
-class SkillsService {
-  private baseUrl: string;
+export class SkillsService {  protected baseUrl: string;
 
   constructor() {
     this.baseUrl = process.env.REACT_APP_BACKEND_API_URL || 'http://localhost:5000';
@@ -55,7 +56,6 @@ class SkillsService {
 
   async getAllSkills(): Promise<SkillsData> {
     try {
-      // Fetch all skills without pagination limit
       const response = await fetch(`${this.baseUrl}/api/skills?limit=100`);
       
       if (!response.ok) {
@@ -68,12 +68,10 @@ class SkillsService {
         throw new Error('API request was not successful');
       }
 
-      // Transform API data to dynamic categories format
       return this.transformToSkillsFormat(apiResponse.data);
     } catch (error) {
       console.error('Error fetching skills from API:', error);
       
-      // Fallback to local data if API fails
       try {
         const skillsData = await import('../assets/data/skills.json');
         return skillsData.default;
@@ -84,13 +82,11 @@ class SkillsService {
     }
   }
 
-  private transformToSkillsFormat(apiSkills: ApiSkill[]): SkillsData {
-    // Filter only public skills and sort by order
+  protected transformToSkillsFormat(apiSkills: ApiSkill[]): SkillsData {
     const publicSkills = apiSkills
       .filter(skill => skill.isPublic)
       .sort((a, b) => a.order - b.order);
 
-    // Group skills by category dynamically
     const categoryMap = new Map<string, ApiSkill[]>();
     
     publicSkills.forEach(skill => {
@@ -101,28 +97,22 @@ class SkillsService {
       categoryMap.get(categoryTitle)!.push(skill);
     });
 
-    // Define category order for consistent display
     const categoryOrder = this.getCategoryOrder();
     
-    // Sort categories based on predefined order, then alphabetically
     const sortedCategories = Array.from(categoryMap.entries()).sort(([a], [b]) => {
       const aIndex = categoryOrder.indexOf(a);
       const bIndex = categoryOrder.indexOf(b);
       
-      // If both categories are in the predefined order
       if (aIndex !== -1 && bIndex !== -1) {
         return aIndex - bIndex;
       }
       
-      // If only one category is in the predefined order
       if (aIndex !== -1) return -1;
       if (bIndex !== -1) return 1;
       
-      // If neither category is in the predefined order, sort alphabetically
       return a.localeCompare(b);
     });
 
-    // Transform to skills.json format
     const skills: SkillCategory[] = sortedCategories.map(([title, categorySkills]) => ({
       title,
       skills: categorySkills.map(skill => ({
@@ -140,8 +130,7 @@ class SkillsService {
     return { skills };
   }
 
-  private formatCategoryTitle(category: string): string {
-    // Convert category to title case and handle special cases
+  protected formatCategoryTitle(category: string): string {
     const categoryTitleMap: Record<string, string> = {
       'programming': 'Programming Languages',
       'framework': 'Frameworks & Libraries',
@@ -156,14 +145,13 @@ class SkillsService {
     return categoryTitleMap[category.toLowerCase()] || this.toTitleCase(category);
   }
 
-  private toTitleCase(str: string): string {
+  protected toTitleCase(str: string): string {
     return str.replace(/\w\S*/g, (txt) => 
       txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
     );
   }
 
-  private getCategoryOrder(): string[] {
-    // Define the preferred order of categories for display
+  protected getCategoryOrder(): string[] {
     return [
       'Programming Languages',
       'Frameworks & Libraries', 
@@ -175,25 +163,100 @@ class SkillsService {
       'Other Skills'
     ];
   }
+}
 
-  // Get unique categories from API
-  async getSkillCategories(): Promise<string[]> {
+class DynamicSkillsService extends SkillsService {
+  private categoryConfig: CategoryConfig;
+  private cache: { data: SkillsData | null; timestamp: number } = { data: null, timestamp: 0 };
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+  constructor() {
+    super();
+    this.categoryConfig = getCategoryConfig();
+  }
+
+  async getAllSkills(): Promise<SkillsData> {
+    // Check cache first
+    const now = Date.now();
+    if (this.cache.data && (now - this.cache.timestamp) < this.CACHE_DURATION) {
+      console.log('Returning cached skills data');
+      return this.cache.data;
+    }
+
     try {
-      const response = await fetch(`${this.baseUrl}/api/skills/categories`);
+      console.log('Fetching fresh skills data from API');
+      const response = await fetch(`${this.baseUrl}/api/skills?limit=100`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const apiResponse = await response.json();
-      return apiResponse.success ? apiResponse.data : [];
+      const apiResponse: ApiResponse = await response.json();
+      
+      if (!apiResponse.success) {
+        throw new Error('API request was not successful');
+      }
+
+      const skillsData = this.transformToSkillsFormat(apiResponse.data);
+      
+      // Update cache
+      this.cache = {
+        data: skillsData,
+        timestamp: now
+      };
+
+      return skillsData;
     } catch (error) {
-      console.error('Error fetching skill categories:', error);
-      return [];
+      console.error('Error fetching skills from API:', error);
+      
+      // Return cached data if available, even if expired
+      if (this.cache.data) {
+        console.log('Returning expired cached data due to API error');
+        return this.cache.data;
+      }
+      
+      try {
+        const skillsData = await import('../assets/data/skills.json');
+        return skillsData.default;
+      } catch (fallbackError) {
+        console.error('Error loading fallback skills data:', fallbackError);
+        return { skills: [] };
+      }
     }
   }
 
-  // Additional methods for more specific data fetching
+  // Method to clear cache if needed
+  clearCache(): void {
+    this.cache = { data: null, timestamp: 0 };
+  }
+
+  protected formatCategoryTitle(category: string): string {
+    const config = this.categoryConfig[category.toLowerCase()];
+    return config?.title || this.toTitleCase(category);
+  }
+
+  protected getCategoryOrder(): string[] {
+    return Object.values(this.categoryConfig)
+      .sort((a, b) => a.order - b.order)
+      .map(config => config.title);
+  }
+
+  // Method to update category configuration dynamically
+  updateCategoryConfig(newConfig: CategoryConfig): void {
+    this.categoryConfig = { ...this.categoryConfig, ...newConfig };
+  }
+
+  // Get category configuration
+  getCategoryConfig(): CategoryConfig {
+    return this.categoryConfig;
+  }
+
+  // Get category info for a specific category
+  getCategoryInfo(category: string) {
+    return this.categoryConfig[category.toLowerCase()];
+  }
+
+  // Additional methods for enhanced functionality
   async getFeaturedSkills(): Promise<ApiSkill[]> {
     try {
       const response = await fetch(`${this.baseUrl}/api/skills?featured=true&limit=20`);
@@ -241,43 +304,10 @@ class SkillsService {
       return [];
     }
   }
-
-  // Get skills grouped by level
-  async getSkillsByLevel(): Promise<Record<string, ApiSkill[]>> {
-    try {
-      const allSkills = await this.getAllSkills();
-      const skillsByLevel: Record<string, ApiSkill[]> = {};
-      
-      allSkills.skills.forEach(category => {
-        category.skills.forEach(skill => {
-          const level = this.getLevelFromProficiency(skill.level);
-          if (!skillsByLevel[level]) {
-            skillsByLevel[level] = [];
-          }
-          skillsByLevel[level].push(skill as any);
-        });
-      });
-
-      return skillsByLevel;
-    } catch (error) {
-      console.error('Error grouping skills by level:', error);
-      return {};
-    }
-  }
-
-  private getLevelFromProficiency(proficiency: number): string {
-    if (proficiency >= 90) return 'Expert';
-    if (proficiency >= 75) return 'Advanced';
-    if (proficiency >= 60) return 'Intermediate';
-    return 'Beginner';
-  }
 }
 
-export const skillsService = new SkillsService();
+export const dynamicSkillsService = new DynamicSkillsService();
 
-// Maintain backward compatibility
-export const SkillsServiceLegacy = {
-  getAllSkills: () => skillsService.getAllSkills()
-};
+
 // Export types for use in components
 export type { SkillsData, SkillCategory, ApiSkill };

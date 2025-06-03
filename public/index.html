@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#3b82f6" />
+  <meta name="theme-color" content="#000000" />
   <meta name="description"
     content="Amol Deole - Senior Software Engineer with 8+ years of experience in Java, Spring Boot, Angular, React, and AWS. Building scalable web applications and microservices." />
   <meta name="keywords"
@@ -37,7 +37,54 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
 
-  <title>Amol Deole | Senior Software Engineer | Java • Angular • AWS</title>
+  <title>Amol Deole - Portfolio</title>
+
+  <!-- Theme Script - Must run before React -->
+  <script>
+    (function() {
+      function getInitialTheme() {
+        try {
+          // First priority: localStorage
+          const persistedTheme = localStorage.getItem('theme');
+          if (persistedTheme === 'dark' || persistedTheme === 'light') {
+            console.log('Theme from localStorage:', persistedTheme);
+            return persistedTheme;
+          }
+          
+          // Second priority: system preference
+          const mql = window.matchMedia('(prefers-color-scheme: dark)');
+          if (mql.matches) {
+            console.log('Theme from system preference: dark');
+            return 'dark';
+          }
+          
+          console.log('Theme defaulting to: light');
+          return 'light';
+        } catch (e) {
+          console.log('Theme error, defaulting to light:', e);
+          return 'light';
+        }
+      }
+      
+      const theme = getInitialTheme();
+      const root = document.documentElement;
+      
+      // Clear any existing theme classes
+      root.classList.remove('light', 'dark');
+      
+      // Apply the theme
+      root.classList.add(theme);
+      
+      // Store the theme for React to pick up
+      window.__theme = theme;
+      window.__themeReady = true;
+      
+      console.log('Initial theme applied:', theme);
+      
+      // Also set a CSS custom property as backup
+      root.style.setProperty('--initial-theme', theme);
+    })();
+  </script>
 </head>
 
 <body>

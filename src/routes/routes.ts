@@ -1,39 +1,38 @@
 import { lazy } from 'react';
 
-const basePath = process.env.PUBLIC_URL || '';
-
+// Remove basePath from individual routes since it's handled by BrowserRouter basename
 export const routes = [
   {
-    path: `${basePath}/`,
-    component: lazy(() => import('../components/Hero')),
+    path: "/",
+    component: lazy(() => import('../components/Home')),
     exact: true
   },
   {
-    path: `${basePath}/about`,
+    path: "/about",
     component: lazy(() => import('../components/About'))
   },
   {
-    path: `${basePath}/skills`,
+    path: "/skills",
     component: lazy(() => import('../components/Skills'))
   },
   {
-    path: `${basePath}/resume`,
+    path: "/resume",
     component: lazy(() => import('../components/Resume'))
   },
   {
-    path: `${basePath}/projects`,
+    path: "/projects",
     component: lazy(() => import('../components/Projects'))
   },
   {
-    path: `${basePath}/testimonials`,
+    path: "/testimonials",
     component: lazy(() => import('../components/Testimonials'))
   },
   {
-    path: `${basePath}/certificates`,
+    path: "/certificates",
     component: lazy(() => import('../components/Certificates'))
   },
   {
-    path: `${basePath}/contact`,
+    path: "/contact",
     component: lazy(() => import('../components/Contact'))
   }
 ];
