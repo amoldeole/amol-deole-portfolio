@@ -1,7 +1,9 @@
 import { useTheme } from '../contexts/ThemeContext';
 
+type Theme = 'light' | 'dark';
+
 interface SafeThemeReturn {
-  theme: 'dark' | 'light';
+  theme: Theme;
   toggleTheme: () => void;
   isThemeAvailable: boolean;
 }
@@ -15,9 +17,10 @@ export const useSafeTheme = (): SafeThemeReturn => {
       isThemeAvailable: true,
     };
   } catch (error) {
+    // Fallback when theme context is not available
     return {
-      theme: 'dark',
-      toggleTheme: () => console.warn('Theme context not available'),
+      theme: 'light',
+      toggleTheme: () => {},
       isThemeAvailable: false,
     };
   }

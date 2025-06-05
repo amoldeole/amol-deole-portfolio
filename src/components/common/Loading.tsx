@@ -1,17 +1,11 @@
-import { motion } from 'framer-motion';
+import React from 'react';
 
-export const Loading = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <motion.div
-      animate={{
-        scale: [1, 1.2, 1],
-        rotate: [0, 360],
-      }}
-      transition={{
-        duration: 1,
-        repeat: Infinity,
-      }}
-      className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full"
-    />
-  </div>
-);
+const Loading: React.FC = () => {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400"></div>
+    </div>
+  );
+};
+
+export default Loading;

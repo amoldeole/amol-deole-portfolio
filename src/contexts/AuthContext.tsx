@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { authService } from '../services/auth.service';
 
 interface User {
-  id: string;
+  _id: string; // Changed from id to _id for consistency
   firstName: string;
   lastName: string;
   email: string;

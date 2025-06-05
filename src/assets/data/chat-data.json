@@ -1,0 +1,45 @@
+{
+  "users": [
+    {
+      "id": "user1",
+      "name": "John Doe",
+      "avatar": "/avatars/john.jpg",
+      "status": "online",
+      "lastSeen": "2024-01-15T10:30:00Z",
+      "phone": "+1234567890"
+    },
+    {
+      "id": "user2",
+      "name": "Jane Smith",
+      "avatar": "/avatars/jane.jpg",
+      "status": "offline",
+      "lastSeen": "2024-01-15T09:15:00Z",
+      "phone": "+1234567891"
+    }
+  ],
+  "chats": [
+    {
+      "id": "chat1",
+      "type": "individual",
+      "participants": ["user1", "user2"],
+      "lastMessage": {
+        "id": "msg1",
+        "text": "Hey, how are you?",
+        "timestamp": "2024-01-15T10:30:00Z",
+        "senderId": "user1"
+      },
+      "unreadCount": 2
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg1",
+      "chatId": "chat1",
+      "senderId": "user1",
+      "text": "Hey, how are you?",
+      "timestamp": "2024-01-15T10:30:00Z",
+      "type": "text",
+      "status": "delivered"
+    }
+  ]
+}

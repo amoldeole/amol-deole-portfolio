@@ -19,6 +19,10 @@ class AuthService {
         body: JSON.stringify(credentials),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data: AuthResponse = await response.json();
 
       if (data.success && data.data) {
@@ -32,7 +36,7 @@ class AuthService {
       console.error('Login error:', error);
       return {
         success: false,
-        message: 'Network error occurred'
+        message: error instanceof Error ? error.message : 'Network error occurred'
       };
     }
   }

@@ -1,7 +1,11 @@
-import { Suspense } from 'react';
-import { Loading } from './Loading';
-export const LazyComponent = ({ children }: { children: React.ReactNode }) => (
-  <Suspense fallback={<Loading />}>
-    {children}
-  </Suspense>
-);
+import React, { ReactNode } from 'react';
+
+interface LazyComponentProps {
+  children: ReactNode;
+}
+
+const LazyComponent: React.FC<LazyComponentProps> = ({ children }) => {
+  return <>{children}</>;
+};
+
+export default LazyComponent;

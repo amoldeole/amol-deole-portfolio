@@ -94,7 +94,6 @@ export const ProjectsService = {
     } catch (error) {
       console.error('Error fetching projects:', error);
       return Projects.data.map(mapApiProjectToProject); // Fallback to local data
-      throw error;
     }
   },
   
