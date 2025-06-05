@@ -22,6 +22,7 @@ import { Chat, Message, User } from '../../types/chat';
 
 const ChatWidget: React.FC = () => {
   const { state, loadChats, selectChat, sendMessage, sendTyping } = useChat();
+  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const { initiateCall } = useCall();
   const [isOpen, setIsOpen] = useState(false);
   const [newMessage, setNewMessage] = useState('');
@@ -239,7 +240,7 @@ const ChatWidget: React.FC = () => {
               <div className="flex items-center space-x-3">
                 {state.selectedChat && (
                   <button
-                    onClick={() => selectChat(null)}
+                    onClick={() => setSelectedChat(null)}
                     className="p-1 hover:bg-green-700 dark:hover:bg-green-600 rounded"
                   >
                     <ArrowLeft size={20} />
@@ -334,7 +335,7 @@ const ChatWidget: React.FC = () => {
                         <motion.div
                           key={chat._id}
                           whileHover={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}
-                          onClick={() => selectChat(chat)}
+                          onClick={() => setSelectedChat(chat)}
                           className="p-3 border-b border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
                         >
                           <div className="flex items-center space-x-3">

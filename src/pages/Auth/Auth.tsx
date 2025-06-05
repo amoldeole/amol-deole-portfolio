@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MessageCircle, User, Camera } from 'lucide-react';
 
+const API_URL = process.env.REACT_APP_BACKEND_API_URL || 'http://localhost:5000';
+
 const Auth: React.FC = () => {
   const [step, setStep] = useState<'phone' | 'otp' | 'profile'>('phone');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -9,8 +11,12 @@ const Auth: React.FC = () => {
   const [profile, setProfile] = useState({
     firstName: '',
     lastName: '',
+    email: '',
+    password: '',
     avatar: null as File | null
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handlePhoneSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,9 +28,56 @@ const Auth: React.FC = () => {
     setStep('profile');
   };
 
-  const handleProfileSubmit = (e: React.FormEvent) => {
+  const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Registration complete');
+    setError(null);
+
+    // Validation
+    if (!profile.firstName.trim() || !profile.lastName.trim() || !profile.email.trim() || !profile.password.trim()) {
+      setError('All fields are required.');
+      return;
+    }
+    setLoading(true);
+
+    try {
+      let profilePicture = '';
+      if (profile.avatar) {
+        // Optionally, upload avatar to your backend or a file service here and get the URL
+        // For now, we'll skip this and use a placeholder
+        profilePicture = '';
+      }
+
+      const payload = {
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        email: profile.email,
+        password: profile.password,
+        role: 'guest',
+        profilePicture: profilePicture || 'https://support.hubstaff.com/wp-content/uploads/2019/08/good-pic-300x286.png',
+        permissions: {},
+        phone: phoneNumber
+      };
+
+      const res = await fetch(`${API_URL}/api/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || 'Signup failed');
+      }
+
+      // Registration successful
+      // You can redirect or show a success message here
+      alert('Registration successful! Please login.');
+      // Optionally, redirect to login page
+    } catch (err: any) {
+      setError(err.message || 'Signup failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -201,7 +254,7 @@ const Auth: React.FC = () => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  First Name
+                  First Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -213,7 +266,7 @@ const Auth: React.FC = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Last Name
+                  Last Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -225,11 +278,42 @@ const Auth: React.FC = () => {
               </div>
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Email <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                value={profile.email}
+                onChange={(e) => setProfile(prev => ({ ...prev, email: e.target.value }))}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Password <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="password"
+                value={profile.password}
+                onChange={(e) => setProfile(prev => ({ ...prev, password: e.target.value }))}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                required
+              />
+            </div>
+
+            {error && (
+              <div className="text-red-500 text-sm text-center">{error}</div>
+            )}
+
             <button
               type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+              disabled={loading}
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-60"
             >
-              Complete Registration
+              {loading ? 'Registering...' : 'Complete Registration'}
             </button>
 
             <button

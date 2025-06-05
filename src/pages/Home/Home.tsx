@@ -8,14 +8,18 @@ import {
   Search,
   Phone,
   Video,
-  UserPlus
+  UserPlus,
+  Send
 } from 'lucide-react';
+import { Routes, Route } from 'react-router-dom';
 import Contacts from '../../components/Contacts/Contacts';
 import Status from '../../components/Status/Status';
 import Settings from '../../components/Settings/Settings';
 import { useChat } from '../../contexts/ChatContext';
 import { authService } from '../../services/auth.service';
 import { Chat, User } from '../../types/chat';
+import ChatWidget1 from '../../components/Chat/ChatWidget';
+import ChatWidget2 from '../../components/ChatWidget/ChatWidget';
 
 type ActiveTab = 'chats' | 'contacts' | 'status' | 'settings';
 
@@ -301,7 +305,7 @@ const ChatWindow: React.FC = () => {
             disabled={!newMessage.trim()}
             className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <MessageCircle size={20} />
+            <Send size={20} />
           </button>
         </div>
       </div>
@@ -368,7 +372,11 @@ const Home: React.FC = () => {
 
           {/* Main Content */}
           <div className="flex-1 bg-white dark:bg-gray-800">
-            {renderContent()}
+            <Routes>
+              <Route path="/chat-widget1" element={<ChatWidget1 />} />
+              <Route path="/chat-widget2" element={<ChatWidget2 />} />
+              <Route path="*" element={renderContent()} />
+            </Routes>
           </div>
         </div>
       </div>
