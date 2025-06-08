@@ -190,7 +190,7 @@
       "demoUrl": "https://itunes.apple.com/us/app/speak-n-cook/id1354367604?ls=1&mt=8",
       "githubUrl": "",
       "images": [
-        "/amol-deole-portfolio/assets/img/speekncook-1.png"
+        "/assets/img/speekncook-1.png"
       ],
       "features": [
         "Implemented voice command functionality using React Native packages for recipe step navigation",
@@ -297,7 +297,7 @@
       "demoUrl": "",
       "githubUrl": "",
       "images": [
-        "/amol-deole-portfolio/assets/img/npm_e.png"
+        "/assets/img/npm_e.png"
       ],
       "features": [
         "Developed Docker-based deployment architecture for npmE appliance",
