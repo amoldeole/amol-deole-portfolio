@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { User } from '../../../../shared/types/user.types';
 import { Link } from 'react-router-dom';
+const BASE_URL = process.env.REACT_APP_BACKEND_API_URL || 'http://localhost:5000';
 
 const fetchUsers = async (params: string) => {
-  const res = await fetch(`/api/auth/users${params}`);
+  const res = await fetch(`${BASE_URL}/api/auth/users${params}`);
   return res.json();
 };
 

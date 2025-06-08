@@ -36,6 +36,10 @@ interface SocketEvents {
   connect: () => void;
 }
 
+/**
+ * @deprecated Use SocketContext instead. This service is kept for backward compatibility.
+ * The SocketContext provides better integration with React lifecycle and authentication state.
+ */
 class SocketService {
   private socket: Socket | null = null;
   private eventListeners: Map<string, Function[]> = new Map();
@@ -47,10 +51,8 @@ class SocketService {
     // Try multiple possible backend URLs
     const possibleUrls = [
       process.env.REACT_APP_SOCKET_URL,
-      process.env.REACT_APP_API_URL,
       process.env.REACT_APP_BACKEND_API_URL,
       'http://localhost:5000', // Alternative port
-      'http://localhost:8000'  // Another common port
     ];
 
     // Return the first non-undefined URL
@@ -63,6 +65,7 @@ class SocketService {
 
     try {
       this.socket = io(socketUrl, {
+        path: '/socket.io', // Ensure this matches your server configuration
         transports: ['websocket', 'polling'], // Allow fallback to polling
         timeout: 20000,
         reconnection: true,
@@ -194,6 +197,7 @@ class SocketService {
   }
 
   connect() {
+    console.warn('SocketService.connect() is deprecated. Use SocketContext instead.');
     if (!this.socket || !this.socket.connected) {
       this.initializeSocket();
     }
@@ -204,6 +208,7 @@ class SocketService {
   }
 
   disconnect() {
+    console.warn('SocketService.disconnect() is deprecated. Use SocketContext instead.');
     if (this.socket) {
       this.socket.disconnect();
       this.socket = null;
@@ -212,6 +217,7 @@ class SocketService {
 
   // Event management
   on<K extends keyof SocketEvents>(event: K, callback: SocketEvents[K]) {
+    console.warn('SocketService.on() is deprecated. Use SocketContext instead.');
     if (!this.eventListeners.has(event)) {
       this.eventListeners.set(event, []);
     }
@@ -219,6 +225,7 @@ class SocketService {
   }
 
   off<K extends keyof SocketEvents>(event: K, callback: SocketEvents[K]) {
+    console.warn('SocketService.off() is deprecated. Use SocketContext instead.');
     const listeners = this.eventListeners.get(event);
     if (listeners) {
       const index = listeners.indexOf(callback);
@@ -243,6 +250,7 @@ class SocketService {
     replyTo?: string;
     tempId?: string;
   }) {
+    console.warn('SocketService.sendMessage() is deprecated. Use SocketContext instead.');
     if (this.socket && this.socket.connected) {
       this.socket.emit('sendMessage', messageData);
     } else {
@@ -251,12 +259,14 @@ class SocketService {
   }
 
   markAsRead(chatId: string, messageIds: string[]) {
+    console.warn('SocketService.markAsRead() is deprecated. Use SocketContext instead.');
     if (this.socket && this.socket.connected) {
       this.socket.emit('markAsRead', { chatId, messageIds });
     }
   }
 
   sendTyping(chatId: string, isTyping: boolean) {
+    console.warn('SocketService.sendTyping() is deprecated. Use SocketContext instead.');
     if (this.socket && this.socket.connected) {
       this.socket.emit('typing', { chatId, isTyping });
     }
@@ -264,12 +274,14 @@ class SocketService {
 
   // Chat room methods
   joinChat(chatId: string) {
+    console.warn('SocketService.joinChat() is deprecated. Use SocketContext instead.');
     if (this.socket && this.socket.connected) {
       this.socket.emit('joinChat', chatId);
     }
   }
 
   leaveChat(chatId: string) {
+    console.warn('SocketService.leaveChat() is deprecated. Use SocketContext instead.');
     if (this.socket && this.socket.connected) {
       this.socket.emit('leaveChat', chatId);
     }
@@ -277,6 +289,7 @@ class SocketService {
 
   // Call methods
   initiateCall(participantIds: string[], type: 'voice' | 'video', chatId?: string, offer?: any) {
+    console.warn('SocketService.initiateCall() is deprecated. Use SocketContext instead.');
     if (this.socket && this.socket.connected) {
       this.socket.emit('initiateCall', {
         participantIds,
@@ -288,18 +301,21 @@ class SocketService {
   }
 
   answerCall(callId: string, answer?: any) {
+    console.warn('SocketService.answerCall() is deprecated. Use SocketContext instead.');
     if (this.socket && this.socket.connected) {
       this.socket.emit('answerCall', { callId, answer });
     }
   }
 
   declineCall(callId: string) {
+    console.warn('SocketService.declineCall() is deprecated. Use SocketContext instead.');
     if (this.socket && this.socket.connected) {
       this.socket.emit('declineCall', { callId });
     }
   }
 
   endCall(callId: string) {
+    console.warn('SocketService.endCall() is deprecated. Use SocketContext instead.');
     if (this.socket && this.socket.connected) {
       this.socket.emit('endCall', { callId });
     }
@@ -307,18 +323,21 @@ class SocketService {
 
   // WebRTC methods
   sendIceCandidate(callId: string, candidate: any) {
+    console.warn('SocketService.sendIceCandidate() is deprecated. Use SocketContext instead.');
     if (this.socket && this.socket.connected) {
       this.socket.emit('iceCandidate', { callId, candidate });
     }
   }
 
   sendOffer(callId: string, offer: any) {
+    console.warn('SocketService.sendOffer() is deprecated. Use SocketContext instead.');
     if (this.socket && this.socket.connected) {
       this.socket.emit('offer', { callId, offer });
     }
   }
 
   sendAnswer(callId: string, answer: any) {
+    console.warn('SocketService.sendAnswer() is deprecated. Use SocketContext instead.');
     if (this.socket && this.socket.connected) {
       this.socket.emit('answer', { callId, answer });
     }
@@ -326,10 +345,12 @@ class SocketService {
 
   // Utility methods
   isConnected(): boolean {
+    console.warn('SocketService.isConnected() is deprecated. Use SocketContext instead.');
     return this.socket?.connected || false;
   }
 
   getSocket(): Socket | null {
+    console.warn('SocketService.getSocket() is deprecated. Use SocketContext instead.');
     return this.socket;
   }
 }

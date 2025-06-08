@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { 
   MessageCircle, 
@@ -29,16 +29,16 @@ const ChatList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const currentUser = authService.getUser();
 
-  const getParticipantName = (chat: Chat) => {
+  const getParticipantName = useCallback((chat: Chat) => {
     if (chat.type === 'group') {
       return chat.groupName || 'Group Chat';
     }
     
     const otherParticipant = chat.participants.find((p: User) => p._id !== currentUser?._id);
     return otherParticipant ? `${otherParticipant.firstName} ${otherParticipant.lastName}` : 'Unknown';
-  };
+  }, [currentUser?._id]);
 
-  const getParticipantAvatar = (chat: Chat) => {
+  const getParticipantAvatar = useCallback((chat: Chat) => {
     if (chat.type === 'group') {
       return chat.groupName?.charAt(0).toUpperCase() || 'G';
     }
@@ -47,16 +47,16 @@ const ChatList: React.FC = () => {
     return otherParticipant ? 
       `${otherParticipant.firstName.charAt(0)}${otherParticipant.lastName.charAt(0)}`.toUpperCase() : 
       'U';
-  };
+  }, [currentUser?._id]);
 
-  const isParticipantOnline = (chat: Chat) => {
+  const isParticipantOnline = useCallback((chat: Chat) => {
     if (chat.type === 'group') return false;
     
     const otherParticipant = chat.participants.find((p: User) => p._id !== currentUser?._id);
     return otherParticipant?.isOnline || false;
-  };
+  }, [currentUser?._id]);
 
-  const formatTime = (date: Date | string) => {
+  const formatTime = useCallback((date: Date | string) => {
     const messageDate = new Date(date);
     const now = new Date();
     const diffInDays = Math.floor((now.getTime() - messageDate.getTime()) / (1000 * 60 * 60 * 24));
@@ -70,7 +70,7 @@ const ChatList: React.FC = () => {
     } else {
       return messageDate.toLocaleDateString([], { month: 'short', day: 'numeric' });
     }
-  };
+  }, []);
 
   const filteredChats = state.chats.filter(chat =>
     getParticipantName(chat).toLowerCase().includes(searchTerm.toLowerCase())
@@ -78,8 +78,8 @@ const ChatList: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col bg-white dark:bg-gray-900">
-      {/* Header */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+      {/* Header - Fixed */}
+      <div className="flex-shrink-0 p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Chats</h2>
           <div className="flex items-center space-x-2">
@@ -102,8 +102,8 @@ const ChatList: React.FC = () => {
         </div>
       </div>
 
-      {/* Chat List */}
-      <div className="flex-1 overflow-y-auto">
+      {/* Chat List - Scrollable */}
+      <div className="flex-1 overflow-y-auto chat-messages">
         {state.loading ? (
           <div className="flex items-center justify-center h-full">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -150,8 +150,8 @@ const ChatList: React.FC = () => {
                     <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
                       {chat.lastMessage?.content || 'No messages yet'}
                     </p>
-                    {chat.unreadCount > 0 && (
-                      <div className="bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center ml-2">
+                    {chat.unreadCount && chat.unreadCount > 0 && (
+                      <div className="bg-blue-600 text-white text-xs rounded-full h-5 min-w-[20px] flex items-center justify-center px-2 ml-2">
                         {chat.unreadCount > 99 ? '99+' : chat.unreadCount}
                       </div>
                     )}
@@ -170,7 +170,53 @@ const ChatList: React.FC = () => {
 const ChatWindow: React.FC = () => {
   const { state, sendMessage } = useChat();
   const [newMessage, setNewMessage] = useState('');
+  const [isSending, setIsSending] = useState(false);
   const currentUser = authService.getUser();
+
+  const isParticipantOnline = useCallback((chat: Chat) => {
+    if (chat.type === 'group') return false;
+    
+    const otherParticipant = chat.participants.find((p: User) => p._id !== currentUser?._id);
+    return otherParticipant?.isOnline || false;
+  }, [currentUser?._id]);
+
+  const handleSendMessage = useCallback(async () => {
+    if (!newMessage.trim() || !state.selectedChat || isSending) return;
+
+    const messageContent = newMessage.trim();
+    setNewMessage(''); // Clear input immediately
+    setIsSending(true);
+
+    try {
+      await sendMessage(state.selectedChat._id, messageContent);
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      // Restore message on error
+      setNewMessage(messageContent);
+    } finally {
+      setIsSending(false);
+    }
+  }, [newMessage, state.selectedChat, isSending, sendMessage]);
+
+  const formatTime = useCallback((date: Date | string) => {
+    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }, []);
+
+  const getParticipantName = useCallback((chat: Chat) => {
+    if (chat.type === 'group') {
+      return chat.groupName || 'Group Chat';
+    }
+    
+    const otherParticipant = chat.participants.find((p: User) => p._id !== currentUser?._id);
+    return otherParticipant ? `${otherParticipant.firstName} ${otherParticipant.lastName}` : 'Unknown';
+  }, [currentUser?._id]);
+
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  }, [handleSendMessage]);
 
   if (!state.selectedChat) {
     return (
@@ -185,41 +231,10 @@ const ChatWindow: React.FC = () => {
     );
   }
 
-  const getParticipantName = (chat: Chat) => {
-    if (chat.type === 'group') {
-      return chat.groupName || 'Group Chat';
-    }
-    
-    const otherParticipant = chat.participants.find((p: User) => p._id !== currentUser?._id);
-    return otherParticipant ? `${otherParticipant.firstName} ${otherParticipant.lastName}` : 'Unknown';
-  };
-
-  const isParticipantOnline = (chat: Chat) => {
-    if (chat.type === 'group') return false;
-    
-    const otherParticipant = chat.participants.find((p: User) => p._id !== currentUser?._id);
-    return otherParticipant?.isOnline || false;
-  };
-
-  const handleSendMessage = async () => {
-    if (!newMessage.trim() || !state.selectedChat) return;
-
-    try {
-      await sendMessage(state.selectedChat._id, newMessage.trim());
-      setNewMessage('');
-    } catch (error) {
-      console.error('Failed to send message:', error);
-    }
-  };
-
-  const formatTime = (date: Date | string) => {
-    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
   return (
-    <div className="flex-1 flex flex-col bg-white dark:bg-gray-800">
-      {/* Chat Header */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+    <div className="flex-1 flex flex-col bg-white dark:bg-gray-800 h-full">
+      {/* Chat Header - Fixed */}
+      <div className="flex-shrink-0 p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
@@ -248,8 +263,8 @@ const ChatWindow: React.FC = () => {
         </div>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900 chat-background">
+      {/* Messages - Scrollable */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900 chat-messages" data-messages-container>
         {state.messages.map((message) => {
           const isOwn = message.sender._id === currentUser?._id;
           return (
@@ -287,22 +302,36 @@ const ChatWindow: React.FC = () => {
             </motion.div>
           );
         })}
+        
+        {/* Sending indicator */}
+        {isSending && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex justify-end"
+          >
+            <div className="max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow-sm bg-blue-600 text-white rounded-br-sm opacity-50">
+              <p className="text-sm">Sending...</p>
+            </div>
+          </motion.div>
+        )}
       </div>
 
-      {/* Message Input */}
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+      {/* Message Input - Fixed */}
+      <div className="flex-shrink-0 p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
         <div className="flex items-center space-x-2">
           <input
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+            onKeyPress={handleKeyPress}
             placeholder="Type a message..."
-            className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+            disabled={isSending}
+            className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white disabled:opacity-50"
           />
           <button
             onClick={handleSendMessage}
-            disabled={!newMessage.trim()}
+            disabled={!newMessage.trim() || isSending}
             className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Send size={20} />
@@ -328,10 +357,12 @@ const Home: React.FC = () => {
       case 'chats':
         return (
           <div className="flex h-full">
-            <div className="w-1/3 border-r border-gray-200 dark:border-gray-700">
+            <div className="w-1/3 border-r border-gray-200 dark:border-gray-700 h-full">
               <ChatList />
             </div>
-            <ChatWindow />
+            <div className="flex-1 h-full">
+              <ChatWindow />
+            </div>
           </div>
         );
       case 'contacts':
@@ -341,44 +372,52 @@ const Home: React.FC = () => {
       case 'settings':
         return <Settings />;
       default:
-        return <ChatList />;
+        return (
+          <div className="flex h-full">
+            <div className="w-1/3 border-r border-gray-200 dark:border-gray-700 h-full">
+              <ChatList />
+            </div>
+            <div className="flex-1 h-full">
+              <ChatWindow />
+            </div>
+          </div>
+        );
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
-      <div className="mx-auto">
-        <div className="flex h-screen">
-          {/* Sidebar */}
-          <div className="w-16 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col items-center py-4">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`p-3 rounded-lg mb-2 transition-colors ${
-                    activeTab === tab.id
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
-                  title={tab.label}
-                >
-                  <Icon size={24} />
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Main Content */}
-          <div className="flex-1 bg-white dark:bg-gray-800">
-            <Routes>
-              <Route path="/chat-widget1" element={<ChatWidget1 />} />
-              <Route path="/chat-widget2" element={<ChatWidget2 />} />
-              <Route path="*" element={renderContent()} />
-            </Routes>
-          </div>
+    <div className="h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
+      {/* Top Navigation Bar - Horizontal */}
+      <div className="flex-shrink-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-center py-3 px-4">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center space-x-2 px-4 py-2 mx-2 rounded-lg transition-colors ${
+                  activeTab === tab.id
+                    ? 'bg-blue-600 text-white'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
+                title={tab.label}
+              >
+                <Icon size={20} />
+                <span className="text-sm font-medium">{tab.label}</span>
+              </button>
+            );
+          })}
         </div>
+      </div>
+
+      {/* Main Content - Takes remaining space */}
+      <div className="flex-1 bg-white dark:bg-gray-800 overflow-hidden">
+        <Routes>
+          <Route path="/chat-widget1" element={<ChatWidget1 />} />
+          <Route path="/chat-widget2" element={<ChatWidget2 />} />
+          <Route path="*" element={renderContent()} />
+        </Routes>
       </div>
     </div>
   );

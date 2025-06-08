@@ -5,7 +5,6 @@ export interface User {
   email: string;
   role: string;
   profilePicture?: string;
-  // Optionally, include these if needed elsewhere in your app:
   isActive?: boolean;
   lastLogin?: string;
   settings?: any;

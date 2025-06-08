@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
-import { socketService } from '../../shared/services/socket.service';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { useSocket } from './SocketContext';
 import { Call, User } from '../../shared/types';
 
 interface CallState {
@@ -41,7 +41,64 @@ export const CallProvider: React.FC<{ children: React.ReactNode }> = ({ children
     callDuration: 0,
   });
 
+  const socket = useSocket();
+
+  // Setup socket listeners for call events
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleIncomingCall = (data: { call: Call; offer?: any }) => {
+      setState(prev => ({
+        ...prev,
+        incomingCall: data.call
+      }));
+    };
+
+    const handleCallAnswered = (data: { call: Call }) => {
+      setState(prev => ({
+        ...prev,
+        activeCall: data.call,
+        incomingCall: null
+      }));
+    };
+
+    const handleCallDeclined = (data: { userId: string; callId: string }) => {
+      setState(prev => ({
+        ...prev,
+        incomingCall: null,
+        activeCall: null,
+        isCallWindowVisible: false
+      }));
+    };
+
+    const handleCallEnded = (data: { callId: string; endedBy: string; call: Call }) => {
+      setState(prev => ({
+        ...prev,
+        activeCall: null,
+        incomingCall: null,
+        isCallWindowVisible: false,
+        localStream: null,
+        remoteStream: null,
+        callDuration: 0
+      }));
+    };
+
+    socket.on('incomingCall', handleIncomingCall);
+    socket.on('callAnswered', handleCallAnswered);
+    socket.on('callDeclined', handleCallDeclined);
+    socket.on('callEnded', handleCallEnded);
+
+    return () => {
+      socket.off('incomingCall', handleIncomingCall);
+      socket.off('callAnswered', handleCallAnswered);
+      socket.off('callDeclined', handleCallDeclined);
+      socket.off('callEnded', handleCallEnded);
+    };
+  }, [socket]);
+
   const initiateCall = useCallback((participants: User[], type: 'voice' | 'video', chatId?: string) => {
+    if (!socket) return;
+
     const participantIds = participants.map(p => p._id);
     
     // Create call object
@@ -67,11 +124,11 @@ export const CallProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }));
 
     // Emit to socket
-    socketService.initiateCall(participantIds, type, chatId);
-  }, []);
+    socket.initiateCall(participantIds, type, chatId);
+  }, [socket]);
 
   const answerCall = useCallback(() => {
-    if (state.incomingCall) {
+    if (state.incomingCall && socket) {
       setState(prev => ({
         ...prev,
         activeCall: prev.incomingCall,
@@ -79,69 +136,48 @@ export const CallProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isCallWindowVisible: true
       }));
 
-      socketService.answerCall(state.incomingCall._id);
+      socket.answerCall(state.incomingCall._id);
     }
-  }, [state.incomingCall]);
+  }, [state.incomingCall, socket]);
 
   const declineCall = useCallback(() => {
-    if (state.incomingCall) {
-      socketService.declineCall(state.incomingCall._id);
+    if (state.incomingCall && socket) {
+      socket.declineCall(state.incomingCall._id);
       setState(prev => ({
         ...prev,
         incomingCall: null
       }));
     }
-  }, [state.incomingCall]);
+  }, [state.incomingCall, socket]);
 
   const endCall = useCallback(() => {
-    if (state.activeCall) {
-      socketService.endCall(state.activeCall._id);
-      
-      // Clean up streams
-      if (state.localStream) {
-        state.localStream.getTracks().forEach(track => track.stop());
-      }
-      
+    if (state.activeCall && socket) {
+      socket.endCall(state.activeCall._id);
       setState(prev => ({
         ...prev,
         activeCall: null,
+        incomingCall: null,
         isCallWindowVisible: false,
         localStream: null,
         remoteStream: null,
         callDuration: 0
       }));
     }
-  }, [state.activeCall, state.localStream]);
+  }, [state.activeCall, socket]);
 
   const toggleVideo = useCallback(() => {
     setState(prev => ({
       ...prev,
       isVideoEnabled: !prev.isVideoEnabled
     }));
-
-    // Toggle video track
-    if (state.localStream) {
-      const videoTrack = state.localStream.getVideoTracks()[0];
-      if (videoTrack) {
-        videoTrack.enabled = !state.isVideoEnabled;
-      }
-    }
-  }, [state.isVideoEnabled, state.localStream]);
+  }, []);
 
   const toggleAudio = useCallback(() => {
     setState(prev => ({
       ...prev,
       isAudioEnabled: !prev.isAudioEnabled
     }));
-
-    // Toggle audio track
-    if (state.localStream) {
-      const audioTrack = state.localStream.getAudioTracks()[0];
-      if (audioTrack) {
-        audioTrack.enabled = !state.isAudioEnabled;
-      }
-    }
-  }, [state.isAudioEnabled, state.localStream]);
+  }, []);
 
   const toggleSpeaker = useCallback(() => {
     setState(prev => ({
@@ -169,11 +205,7 @@ export const CallProvider: React.FC<{ children: React.ReactNode }> = ({ children
     hideCallWindow,
   };
 
-  return (
-    <CallContext.Provider value={value}>
-      {children}
-    </CallContext.Provider>
-  );
+  return <CallContext.Provider value={value}>{children}</CallContext.Provider>;
 };
 
 export const useCall = () => {
