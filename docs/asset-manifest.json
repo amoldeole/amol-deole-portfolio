@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/amol-deole-portfolio/static/css/main.36f263cb.css",
-    "main.js": "/amol-deole-portfolio/static/js/main.a4a014e0.js",
+    "main.js": "/amol-deole-portfolio/static/js/main.f71d8b7e.js",
     "static/js/78.a3b2fce8.chunk.js": "/amol-deole-portfolio/static/js/78.a3b2fce8.chunk.js",
     "static/js/664.48142a71.chunk.js": "/amol-deole-portfolio/static/js/664.48142a71.chunk.js",
     "static/js/861.332ebcbd.chunk.js": "/amol-deole-portfolio/static/js/861.332ebcbd.chunk.js",
@@ -40,7 +40,7 @@
     "static/media/bg.jpg": "/amol-deole-portfolio/static/media/bg.570f45b10540f1140278.jpg",
     "index.html": "/amol-deole-portfolio/index.html",
     "main.36f263cb.css.map": "/amol-deole-portfolio/static/css/main.36f263cb.css.map",
-    "main.a4a014e0.js.map": "/amol-deole-portfolio/static/js/main.a4a014e0.js.map",
+    "main.f71d8b7e.js.map": "/amol-deole-portfolio/static/js/main.f71d8b7e.js.map",
     "78.a3b2fce8.chunk.js.map": "/amol-deole-portfolio/static/js/78.a3b2fce8.chunk.js.map",
     "664.48142a71.chunk.js.map": "/amol-deole-portfolio/static/js/664.48142a71.chunk.js.map",
     "861.332ebcbd.chunk.js.map": "/amol-deole-portfolio/static/js/861.332ebcbd.chunk.js.map",
@@ -78,6 +78,6 @@
   },
   "entrypoints": [
     "static/css/main.36f263cb.css",
-    "static/js/main.a4a014e0.js"
+    "static/js/main.f71d8b7e.js"
   ]
 }
