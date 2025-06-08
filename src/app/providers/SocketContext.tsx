@@ -102,8 +102,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
 
   const getSocketUrl = useCallback((): string => {
     const possibleUrls = [
-      process.env.REACT_APP_SOCKET_URL,
-      'http://localhost:5000',
+      process.env.REACT_APP_SOCKET_URL
     ];
     return possibleUrls.find(url => url && url.trim() !== '') || 'http://localhost:5000';
   }, []);

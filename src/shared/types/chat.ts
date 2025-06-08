@@ -37,6 +37,7 @@ export interface Message {
   readBy?: string[];
   isDeleted: boolean;
   deletedFor?: string[];
+  tempId?: string;
   createdAt: Date;
   updatedAt: Date;
 }

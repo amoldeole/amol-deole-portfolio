@@ -94,4 +94,8 @@ class AuthService {
   }
 }
 
+const dispatchAuthChange = () => {
+  window.dispatchEvent(new CustomEvent('authChange'));
+};
+
 export const authService = new AuthService();

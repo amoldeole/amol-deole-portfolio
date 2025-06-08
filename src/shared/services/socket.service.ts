@@ -51,8 +51,6 @@ class SocketService {
     // Try multiple possible backend URLs
     const possibleUrls = [
       process.env.REACT_APP_SOCKET_URL,
-      process.env.REACT_APP_BACKEND_API_URL,
-      'http://localhost:5000', // Alternative port
     ];
 
     // Return the first non-undefined URL

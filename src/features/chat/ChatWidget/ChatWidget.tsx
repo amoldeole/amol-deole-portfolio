@@ -17,15 +17,20 @@ import {
 import { chatService } from '../../../shared/services/chat.service';
 import { Chat, Message } from '../../../shared/types';
 import { authService } from '../../../shared/services/auth.service';
-import { socketService } from '../../../shared/services/socket.service';
+import { useSocket } from '../../../app/providers/SocketContext';
 import { useNavigate } from 'react-router-dom';
+
+// Extended Message type for local state management
+interface LocalMessage extends Message {
+  tempId?: string;
+}
 
 const ChatWidget: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<LocalMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
@@ -36,6 +41,17 @@ const ChatWidget: React.FC = () => {
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
   const currentUser = authService.getUser();
   const navigate = useNavigate();
+
+  // Use SocketContext instead of socketService
+  const { 
+    isConnected, 
+    on, 
+    off, 
+    sendMessage: socketSendMessage, 
+    sendTyping, 
+    joinChat, 
+    leaveChat 
+  } = useSocket();
 
   // Auth check
   useEffect(() => {
@@ -48,8 +64,19 @@ const ChatWidget: React.FC = () => {
 
   // Load messages when chat is selected
   useEffect(() => {
-    if (selectedChat) loadMessages(selectedChat._id);
-  }, [selectedChat]);
+    if (selectedChat) {
+      loadMessages(selectedChat._id);
+      // Join the chat room when selecting a chat
+      joinChat(selectedChat._id);
+    }
+    
+    // Leave previous chat when switching
+    return () => {
+      if (selectedChat) {
+        leaveChat(selectedChat._id);
+      }
+    };
+  }, [selectedChat, joinChat, leaveChat]);
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -62,13 +89,13 @@ const ChatWidget: React.FC = () => {
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
       typingTimeoutRef.current = setTimeout(() => {
         setIsTyping(false);
-        socketService.sendTyping(selectedChat._id, false);
+        sendTyping(selectedChat._id, false);
       }, 1000);
     }
     return () => {
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     };
-  }, [isTyping, selectedChat]);
+  }, [isTyping, selectedChat, sendTyping]);
 
   // --- SOCKET LISTENERS: Always active ---
   useEffect(() => {
@@ -81,11 +108,23 @@ const ChatWidget: React.FC = () => {
 
     // New message: always update unread count and show notification
     const handleNewMessage = (message: Message) => {
-      // If the selected chat is open, add message to messages
       console.log('New message received:', message);
-      if (selectedChat && message.chatId === selectedChat._id) {
-        setMessages(prev => [...prev, message]);
-      }
+      
+      // Check if message already exists to prevent duplicates
+      setMessages(prev => {
+        const existingMessage = prev.find(msg => msg._id === message._id);
+        if (existingMessage) {
+          console.log('Message already exists, skipping duplicate');
+          return prev;
+        }
+        
+        // If the selected chat is open, add message to messages
+        if (selectedChat && message.chatId === selectedChat._id) {
+          return [...prev, message];
+        }
+        return prev;
+      });
+      
       // Always update unread count for the relevant chat
       setChats(prevChats =>
         prevChats.map(chat =>
@@ -94,6 +133,7 @@ const ChatWidget: React.FC = () => {
             : chat
         )
       );
+      
       // Show toast if the message is for a chat that's not currently open
       if (!selectedChat || message.chatId !== selectedChat._id) {
         window.dispatchEvent(
@@ -107,14 +147,76 @@ const ChatWidget: React.FC = () => {
       }
     };
 
-    socketService.on('userTyping', handleTyping);
-    socketService.on('newMessage', handleNewMessage);
+    const handleMessageDelivered = (data: { tempId: string; messageId: string; timestamp: Date }) => {
+      console.log('Message delivered:', data);
+      // Update message status in the UI if needed
+      setMessages(prev => 
+        prev.map(msg => {
+          if (msg.tempId === data.tempId) {
+            return { 
+              ...msg, 
+              _id: data.messageId, 
+              deliveredTo: [...(msg.deliveredTo || []), currentUser?._id!],
+              tempId: undefined // Remove tempId once message is delivered
+            } as LocalMessage;
+          }
+          return msg;
+        })
+      );
+    };
+
+    const handleMessageError = (data: { tempId: string; error: string }) => {
+      console.error('Message error:', data);
+      // Remove the failed message from UI or mark it as failed
+      setMessages(prev => 
+        prev.filter(msg => msg.tempId !== data.tempId)
+      );
+      
+      // Handle message send error - maybe show retry option
+      window.dispatchEvent(
+        new CustomEvent('toast', {
+          detail: {
+            type: 'error',
+            message: `Failed to send message: ${data.error}`,
+          },
+        })
+      );
+    };
+
+    const handleMessagesRead = (data: { chatId: string; messageIds: string[]; readBy: string; readAt: Date }) => {
+      console.log('Messages read:', data);
+      // Update read status for messages
+      if (selectedChat && data.chatId === selectedChat._id) {
+        setMessages(prev =>
+          prev.map(msg => {
+            if (data.messageIds.includes(msg._id)) {
+              return {
+                ...msg,
+                readBy: [...(msg.readBy || []), data.readBy]
+              } as LocalMessage;
+            }
+            return msg;
+          })
+        );
+      }
+    };
+
+    // Register event listeners
+    on('userTyping', handleTyping);
+    on('newMessage', handleNewMessage);
+    on('messageDelivered', handleMessageDelivered);
+    on('messageError', handleMessageError);
+    on('messagesRead', handleMessagesRead);
 
     return () => {
-      socketService.off('userTyping', handleTyping);
-      socketService.off('newMessage', handleNewMessage);
+      // Cleanup event listeners
+      off('userTyping', handleTyping);
+      off('newMessage', handleNewMessage);
+      off('messageDelivered', handleMessageDelivered);
+      off('messageError', handleMessageError);
+      off('messagesRead', handleMessagesRead);
     };
-  }, [selectedChat, currentUser]);
+  }, [selectedChat, currentUser, on, off]);
 
   // --- Data Loaders ---
   const loadChats = async () => {
@@ -148,33 +250,64 @@ const ChatWidget: React.FC = () => {
     setNewMessage(e.target.value);
     if (!isTyping && e.target.value.trim()) {
       setIsTyping(true);
-      if (selectedChat) socketService.sendTyping(selectedChat._id, true);
+      if (selectedChat) sendTyping(selectedChat._id, true);
     } else if (isTyping && !e.target.value.trim()) {
       setIsTyping(false);
-      if (selectedChat) socketService.sendTyping(selectedChat._id, false);
+      if (selectedChat) sendTyping(selectedChat._id, false);
     }
   };
 
   const sendMessageHandler = async () => {
     if (!newMessage.trim() || !selectedChat) return;
+    
     try {
-      socketService.sendMessage({
+      // Generate a temporary ID for optimistic updates
+      const tempId = `temp_${Date.now()}_${Math.random()}`;
+      
+      // Optimistically add message to UI
+      const optimisticMessage: LocalMessage = {
+        _id: tempId,
+        tempId,
+        chatId: selectedChat._id,
+        sender: {
+          ...currentUser!,
+          lastSeen: currentUser?.lastSeen ? new Date(currentUser.lastSeen) : undefined
+        },
+        content: newMessage.trim(),
+        messageType: 'text',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        replyTo: replyingTo ? {
+          _id: replyingTo._id,
+          content: replyingTo.content || '',
+          sender: {
+            ...replyingTo.sender,
+            lastSeen: replyingTo.sender.lastSeen ? new Date(replyingTo.sender.lastSeen) : undefined
+          }
+        } : undefined,
+        deliveredTo: [],
+        readBy: [],
+        isDeleted: false
+      };
+      
+      setMessages(prev => [...prev, optimisticMessage]);
+      
+      // Send via socket
+      socketSendMessage({
         chatId: selectedChat._id,
         content: newMessage.trim(),
         replyTo: replyingTo?._id,
+        tempId
       });
+      
       setNewMessage('');
       setReplyingTo(null);
       setIsTyping(false);
-      socketService.sendTyping(selectedChat._id, false);
+      sendTyping(selectedChat._id, false);
     } catch (error) {
       console.error('Failed to send message:', error);
     }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
+  };  const handleKeyPress = (e: React.KeyboardEvent) => {    if (e.key === 'Enter') {      e.preventDefault();
       sendMessageHandler();
     }
   };
@@ -213,7 +346,7 @@ const ChatWidget: React.FC = () => {
     return other?.isOnline || false;
   };
 
-  const getMessageStatus = (message: Message) => {
+  const getMessageStatus = (message: LocalMessage) => {
     if (message.sender._id !== currentUser?._id) return null;
     if (message.readBy && message.readBy.length > 0) {
       return <CheckCheck className="w-3 h-3 text-blue-400" />;
@@ -227,6 +360,11 @@ const ChatWidget: React.FC = () => {
   const filteredChats = chats.filter(chat =>
     getParticipantName(chat).toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Generate unique key for messages
+  const getMessageKey = (message: LocalMessage) => {
+    return message.tempId || message._id;
+  };
 
   // --- UI ---
   if (!isAuthenticated) {
@@ -261,9 +399,17 @@ const ChatWidget: React.FC = () => {
                 setIsOpen(true);
               }
             }}
-            className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg relative"
+            className={`p-4 rounded-full shadow-lg relative ${
+              isConnected 
+                ? 'bg-green-500 hover:bg-green-600' 
+                : 'bg-gray-500 hover:bg-gray-600'
+            } text-white`}
           >
             <MessageCircle size={24} />
+            {/* Connection status indicator */}
+            <div className={`absolute top-0 right-0 w-3 h-3 rounded-full border-2 border-white ${
+              isConnected ? 'bg-green-400' : 'bg-red-400'
+            }`} />
             {/* Badge for total unread messages */}
             {chats.reduce((count, chat) => count + (chat.unreadCount || 0), 0) > 0 && (
               <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
@@ -310,6 +456,10 @@ const ChatWidget: React.FC = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-2">
+                {/* Connection status indicator */}
+                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-300' : 'bg-red-300'}`} 
+                     title={isConnected ? 'Connected' : 'Disconnected'} />
+                
                 {selectedChat && (
                   <>
                     <button
@@ -431,20 +581,22 @@ const ChatWidget: React.FC = () => {
                       const isOwn = message.sender._id === currentUser?._id;
                       return (
                         <motion.div
-                          key={message._id}
+                          key={getMessageKey(message)}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           className={`flex ${isOwn ? 'justify-end' : 'justify-start'} group`}
                         >
-                          <div className={`max-w-xs px-3 py-2 rounded-lg shadow-sm relative ${isOwn
+                          <div className={`max-w-xs px-3 py-2 rounded-lg shadow-sm relative ${
+                            isOwn
                               ? 'bg-green-500 text-white'
                               : 'bg-white text-gray-900'
-                            }`}
+                            } ${message.tempId ? 'opacity-70' : ''}`}
                             style={{
                               borderRadius: isOwn ? '7.5px 7.5px 7.5px 0px' : '7.5px 7.5px 0px 7.5px'
                             }}>
                             {message.replyTo && (
-                              <div className={`mb-2 p-2 rounded border-l-4 text-xs ${isOwn
+                              <div className={`mb-2 p-2 rounded border-l-4 text-xs ${
+                                isOwn
                                   ? 'bg-green-600 border-green-300'
                                   : 'bg-gray-100 border-gray-400'
                                 }`}>
@@ -558,8 +710,9 @@ const ChatWidget: React.FC = () => {
                           value={newMessage}
                           onChange={handleInputChange}
                           onKeyPress={handleKeyPress}
-                          placeholder="Type a message"
-                          className="w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 dark:text-white"
+                          placeholder={isConnected ? "Type a message" : "Connecting..."}
+                          disabled={!isConnected}
+                          className="w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
                         />
                       </div>
 
@@ -569,7 +722,7 @@ const ChatWidget: React.FC = () => {
 
                       <button
                         onClick={sendMessageHandler}
-                        disabled={!newMessage.trim()}
+                        disabled={!newMessage.trim() || !isConnected}
                         className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Send size={18} />

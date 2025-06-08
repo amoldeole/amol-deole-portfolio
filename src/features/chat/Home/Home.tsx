@@ -16,8 +16,8 @@ import Contacts from '../Contacts/Contacts';
 import Status from '../Status/Status';
 import Settings from '../Settings/Settings';
 import { authService } from '../../../shared/services/auth.service';
-import ChatWidget1 from '../Chat/ChatWidget';
-import ChatWidget2 from '../ChatWidget/ChatWidget';
+// import ChatWidget1 from '../Chat/ChatWidget';
+// import ChatWidget2 from '../ChatWidget/ChatWidget';
 import { useChat } from '../../../app/providers/ChatContext';
 import { Chat, User } from '../../../shared/types';
 
@@ -414,8 +414,8 @@ const Home: React.FC = () => {
       {/* Main Content - Takes remaining space */}
       <div className="flex-1 bg-white dark:bg-gray-800 overflow-hidden">
         <Routes>
-          <Route path="/chat-widget1" element={<ChatWidget1 />} />
-          <Route path="/chat-widget2" element={<ChatWidget2 />} />
+          {/* <Route path="/chat-widget1" element={<ChatWidget1 />} />
+          <Route path="/chat-widget2" element={<ChatWidget2 />} /> */}
           <Route path="*" element={renderContent()} />
         </Routes>
       </div>
