@@ -87,7 +87,7 @@ const About: React.FC = () => {
             className="text-center lg:text-left"
           >
             <img
-              src="/assets/img/me.jpg"
+               src="/amol-deole-portfolio/assets/img/me.jpg"
               alt="Amol Deole"
               className="w-full h-full object-cover rounded-lg shadow-2xl"
             />

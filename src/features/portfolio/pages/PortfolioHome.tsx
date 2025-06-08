@@ -57,7 +57,7 @@ const PortfolioHome: React.FC = () => {
             <div className="relative inline-block">
               <motion.img
                 whileHover={{ scale: 1.05 }}
-                src="/assets/img/me.jpg"
+                 src="/amol-deole-portfolio/assets/img/me.jpg"
                 alt="Amol Deole"
                 className="w-24 h-24 md:w-28 md:h-28 rounded-full mx-auto mb-4 shadow-2xl border-4 border-white dark:border-gray-700"
               />
