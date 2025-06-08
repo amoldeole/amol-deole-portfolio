@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkamol_deole_portfolio=self.webpackChunkamol_deole_portfolio||[]).push([[157],{9157:(e,l,s)=>{s.r(l),s.d(l,{default:()=>t});var o=s(579);const t=()=>(0,o.jsxs)("div",{className:"flex flex-col items-center justify-center h-full",children:[(0,o.jsx)("h2",{className:"text-2xl font-bold mb-2",children:"Coming Soon"}),(0,o.jsx)("p",{className:"text-gray-500",children:"This feature is under development."})]})}}]);
+//# sourceMappingURL=157.2160b036.chunk.js.map
