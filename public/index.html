@@ -41,47 +41,26 @@
 
   <!-- Theme Script - Must run before React -->
   <script>
-    (function() {
+    (function () {
       function getInitialTheme() {
         try {
-          // First priority: localStorage
           const persistedTheme = localStorage.getItem('theme');
           if (persistedTheme === 'dark' || persistedTheme === 'light') {
-            console.log('Theme from localStorage:', persistedTheme);
             return persistedTheme;
           }
-          
-          // Second priority: system preference
           const mql = window.matchMedia('(prefers-color-scheme: dark)');
-          if (mql.matches) {
-            console.log('Theme from system preference: dark');
-            return 'dark';
-          }
-          
-          console.log('Theme defaulting to: light');
-          return 'light';
+          return mql.matches ? 'dark' : 'light';
         } catch (e) {
-          console.log('Theme error, defaulting to light:', e);
           return 'light';
         }
       }
-      
+
       const theme = getInitialTheme();
       const root = document.documentElement;
-      
-      // Clear any existing theme classes
       root.classList.remove('light', 'dark');
-      
-      // Apply the theme
       root.classList.add(theme);
-      
-      // Store the theme for React to pick up
       window.__theme = theme;
       window.__themeReady = true;
-      
-      console.log('Initial theme applied:', theme);
-      
-      // Also set a CSS custom property as backup
       root.style.setProperty('--initial-theme', theme);
     })();
   </script>
